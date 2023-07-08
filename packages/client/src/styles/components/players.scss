@@ -1,0 +1,62 @@
+.players {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    &__wrapper {
+        display: flex;
+        gap: 10px;
+    }
+
+    &__block {
+        padding: 10px;
+        border-radius: var(--radius-small);
+        background: rgba(30, 31, 32, .7);
+        // width: 149px;
+    }
+
+    &__avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 100%;
+        background-repeat: no-repeat;
+        filter: grayscale(100)
+    }
+
+    &__item {
+        @extend .players__block;
+
+        display: flex;
+        gap: 9px;
+
+        &_active {
+            .players__avatar {
+                filter: grayscale(0)
+            }
+        }
+    }
+
+    &__trash {
+        @extend .players__block;
+
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &__timer {
+        @extend .players__block;
+
+        margin-top: 10px;
+        font-size: 22px;
+        min-width: 89px;
+        text-align: center;
+        width: 100%;
+    }
+}

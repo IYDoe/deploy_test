@@ -1,0 +1,21 @@
+.inventory {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 70px;
+    gap: 4px;
+    height: 100%;
+
+    &__item {
+        width: 33px;
+        height: 33px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-smal)l;
+        border: 1px solid var(--color-additional-first);
+
+        &_focus {
+            border: 1px solid var(--color-elem-first);
+        }
+    }
+}

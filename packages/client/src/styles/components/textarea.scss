@@ -1,0 +1,20 @@
+.textarea {
+    resize: none;
+    border: 0;
+    border-radius: 8px;
+    width: 80%;
+    outline: none;
+    background: var(--color-elem-second);
+    color: var(--color-text-third);
+    padding: 4px 8px;
+    min-height: 60px;
+    max-height: 120px;
+
+    &__feed {
+        @extend .textarea;
+    }
+
+    &::placeholder {
+        color: var(--color-text-second);
+    }
+}

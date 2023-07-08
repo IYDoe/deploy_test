@@ -1,0 +1,45 @@
+.title {
+    text-transform: uppercase;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--color-text-first);
+
+    &_main {
+        font-size: 28px;
+    }
+
+    &_section {
+        font-size: 22px;
+    }
+
+    &_block {
+        font-size: 18px;
+    }
+
+    &__main {
+        @extend .title;
+        display: block;
+        font-size: 48px;
+        color: var(--color-text-third);
+    }
+
+    &__topic {
+        @extend .title;
+        display: flex;
+        color: var(--color-text-third);
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    &_error {
+        font-weight: 500;
+        font-size: 60px;
+        margin-bottom: 20px;
+        color: var(--color-text-first);
+    }
+
+    &_centered {
+        text-align: center;
+    }
+}

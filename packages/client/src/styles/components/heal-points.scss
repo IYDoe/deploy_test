@@ -1,0 +1,20 @@
+.heal-points {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2px;
+    margin-top: 9px;
+
+    &__item {
+        width: 11px;
+        height: 11px;
+        display: block;
+        border-radius: 100%;
+        background: #EC3838;
+
+        &_armor {
+            background: #6F63F8;
+            margin-left: auto;
+        }
+    }
+}

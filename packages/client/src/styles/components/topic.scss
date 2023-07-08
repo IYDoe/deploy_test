@@ -1,0 +1,121 @@
+.topic {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    width: 100%;
+    background: var(--color-elem-first);
+    box-sizing: border-box;
+    border-radius: 16px;
+    min-height: 120px;
+
+    &__box {
+        display: flex;
+        padding: 2px;
+        gap: 8px;
+        &>span {
+            font-size: 12px;
+        }
+    }
+
+    &__wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        background: var(--color-elem-second);
+        padding: 8px;
+        width: 100%;
+        border-radius: 16px;
+    }
+
+    &__main {
+        display: flex;
+        padding: 8px;
+        gap: 16px;
+        width: 100%;
+        min-height: 120px;
+    }
+}
+
+.reaction {
+    font-size: 30px;
+    width: 100%;
+    height: 30px;
+    margin: 5px;
+    padding: 0 5px;
+    position: relative;
+    right: 0;
+    display: flex;
+    justify-content: end;
+
+    &__image {
+        position: relative;
+        width: 30px;
+        height: 30px;
+        top: 0;
+        left: 0;
+        background-color: var(--color-additional-first);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        cursor: pointer;
+        border-radius: 50%;
+        z-index: 1;
+
+        &__item {
+            @extend .reaction__image;
+            width: 100%;
+            height: 100%;
+        }
+
+        &__topic {
+            @extend .reaction__image;
+            background: var(--color-additional-first);
+            margin: 0 2px;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+
+        }
+    }
+
+    &__item {
+        height: 100%;
+        width: auto;
+        padding: 3px;
+    }
+
+    &__item_topic {
+        height: 100%;
+        width: auto;
+        margin: 0 5px;
+        padding: 3px;
+        background: var(--color-additional-first);
+        font-family: var(--font-first);
+        border-radius: 5px;
+        display: flex;
+        flex-direction: row;
+        font-size: 16px;
+        color: black;
+    }
+
+    &__overlay{
+        position: absolute;
+        top: 0;
+        right: 0;
+        opacity: 0;
+        height: 0;
+    }
+}
+
+.reaction:hover .reaction__overlay {
+    background: var(--color-additional-first);
+    border: 1px solid black;
+    display: flex;
+    flex-direction: row;
+    height: 30px;
+    width: 150px;
+    border-radius: 10px;
+    opacity: 1;
+    z-index: 0;
+}

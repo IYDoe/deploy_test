@@ -1,0 +1,215 @@
+{
+    "background": "/images/sprites/lvl_1.png", 
+    "size": {
+        "width": 2065,
+        "height": 1436
+    },
+    "finishArea": {
+        "x": 787, 
+        "y": 441,
+        "width": 74,
+        "height": 169
+    },
+    "startPoint": {
+        "eric": {
+            "x": 0, 
+            "y": 1023
+        },
+        "baleog": {
+            "x": 1260, 
+            "y": 0
+        },
+        "olaf": {
+            "x": 0, 
+            "y": 0
+        }
+    },
+    "playersPosition": {
+        "eric": {
+            "x": 80, 
+            "y": 924
+        },
+        "baleog": {
+            "x": 829, 
+            "y": 297
+        },
+        "olaf": {
+            "x": 68, 
+            "y": 159
+        }
+    },
+    "platforms": [
+        {
+            "x": 516,
+            "y": 578,
+            "width": 32,
+            "height": 346
+        },
+        {
+            "x": 1031,
+            "y": 0,
+            "width": 32,
+            "height": 440
+        },
+        {
+            "x": 516,
+            "y": 32,
+            "width": 32,
+            "height": 346
+        },
+        {
+            "x": 174,
+            "y": 991,
+            "width": 202,
+            "height": 32
+        },
+        {
+            "x": 0,
+            "y": 233,
+            "width": 137,
+            "height": 32
+        },
+        {
+            "x": 0,
+            "y": 372,
+            "width": 220,
+            "height": 68
+        },
+        {
+            "x": 330,
+            "y": 372,
+            "width": 270,
+            "height": 68
+        },
+        {
+            "x": 705,
+            "y": 372,
+            "width": 346,
+            "height": 68
+        },
+        {
+            "x": 861,
+            "y": 440,
+            "width": 32,
+            "height": 170
+        },
+        {
+            "x": 0,
+            "y": 578,
+            "width": 430,
+            "height": 32
+        },
+        {
+            "x": 516,
+            "y": 578,
+            "width": 348,
+            "height": 32
+        },
+        {
+            "x": 0,
+            "y": 0,
+            "width": 32,
+            "height": 924
+        },
+        {
+            "x": 0,
+            "y": 0,
+            "width": 1066,
+            "height": 32
+        },
+        {
+            "x": 32,
+            "y": 922,
+            "width": 174,
+            "height": 32
+        },
+        {
+            "x": 344,
+            "y": 922,
+            "width": 174,
+            "height": 32
+        }
+    ],
+    "stairs": [
+        {
+            "x": 445,
+            "y": 576,
+            "width": 70,
+            "height": 346
+        },
+        {
+            "x": 615,
+            "y": 367,
+            "width": 70,
+            "height": 210
+        },
+        {
+            "x": 240,
+            "y": 367,
+            "width": 70,
+            "height": 210
+        }
+    ],
+    "turrets": [
+        {
+            "x": 436,
+            "y": 315,
+            "width": 71,
+            "height": 58,
+            "direction": "left",
+            "damage": 1,
+            "image": "/images/sprites/turret.png",
+            "bullet": {
+                "x": 2,
+                "y": 10,
+                "width": 30,
+                "height": 10,
+                "image": "/images/sprites/bullet.png"
+            }
+        }
+    ],
+    "enemies": [
+        {
+            "image": "/images/sprites/enemy.png",
+            "damage": 1,
+            "width": 60,
+            "height": 65,
+            "x": 67,
+            "y": 512,
+            "distance": 584,
+            "bullet": {
+                "x": 2,
+                "y": 10,
+                "width": 30,
+                "height": 10,
+                "image": "/images/sprites/bullet.png"
+            }
+        }
+    ],
+    "traps": [
+        {
+            "x": 207,
+            "y": 944,
+            "width": 136,
+            "height": 44 
+        }
+    ],
+    "heals": [
+        {
+            "image": "/images/sprites/heal.png",
+            "type": "HP",
+            "x": 52,
+            "y": 546,
+            "width": 30,
+            "height": 32 
+        },
+        {
+            "image": "/images/sprites/armor.png",
+            "type": "AP",
+            "x": 572,
+            "y": 340,
+            "width": 30,
+            "height": 32 
+        }
+    ]
+}

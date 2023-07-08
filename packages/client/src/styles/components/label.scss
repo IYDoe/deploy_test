@@ -1,0 +1,110 @@
+.label {
+    position: relative;
+    color: var(--color-text-second);
+    display: block;
+    padding: 20px 0;
+    width: 100%;
+    min-width: 337px;
+
+    &:last-of-type:not(.label_no-bottom-indent) {
+        margin-bottom: 20px;
+    }
+
+    &__name {
+        font-size: 14px;
+        line-height: 1.2;
+        position: absolute;
+        left: 0;
+        top: 20px;
+        transition: var(--transition);
+    }
+
+    &__line {
+        height: 2px;
+        width: 100%;
+        background: var(--color-additional-first);
+        border-radius: 2px;
+        display: flex;
+        justify-content: center;
+        overflow: hidden;
+
+        &::before {
+            content: '';
+            transition: var(--transition);
+            width: 0;
+            height: 100%;
+            background: var(--color-elem-first);
+        }
+    }
+
+    &__input {
+        border: none;
+        outline: none;
+        background: transparent;
+        width: 100%;
+        margin-bottom: 6px;
+        font-family: var(--font);
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 1.2;
+        color: var(--color-text-first);
+        padding-right: 20px;
+
+        &.not-empty,
+        &:focus {
+            & + .label__line {
+                &::before {
+                    width: 100%;
+                }
+            }
+
+            & + .label__line + .label__name {
+                top: 0;
+                font-size: 12px;
+            }
+        }
+    }
+
+    &__message  {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        font-size: 12px;
+        opacity: 0;
+        pointer-events: none;
+        transition: var(--transition);
+    }
+
+    &__tooltip {
+        z-index: 1;
+        position: absolute;
+        right: 0;
+        top: 22px;
+    }
+
+    &__error {
+        margin-top: 10px;
+        position: relative;
+        text-align: center;
+        color: var(--color-warning);
+    }
+
+    &.error {
+        .label__line {
+            &::before {
+                width: 100%;
+                background: var(--color-warning);
+            }
+        }
+
+        .label__input {
+            color: var(--color-warning);
+        }
+
+        .label__message {
+            color: var(--color-warning);
+            opacity: 1;
+            pointer-events: auto;
+        }
+    }
+}

@@ -1,0 +1,52 @@
+.menu {
+    margin-top: 30px;
+    padding: 30px;
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: 2px solid transparent;
+
+    &__link {
+        font-family: var(--font-second);
+        line-height: 1.5;
+        font-size: 28px;
+        text-transform: uppercase;
+        position: relative;
+
+        &_active {
+            color: var(--color-elem-first-hover);
+
+            &::after,
+            &::before {
+                content: '';
+                width: 41px;
+                height: 41px;
+                background: url('/images/axes.svg') no-repeat center;
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            &::after {
+                right: -50px;
+            }
+
+            &::before {
+                left: -50px;
+            }
+        }
+    }
+}
+
+.light-theme {
+    .menu {
+        background: rgba(255, 255, 255, .8);
+        border-radius: var(--radius);
+        border: 2px solid var(--color-elem-first);
+        padding: 30px 80px;
+    }
+}

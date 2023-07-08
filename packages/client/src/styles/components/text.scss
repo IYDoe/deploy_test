@@ -1,0 +1,57 @@
+.text {
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.2;
+    color: var(--color-text-first);
+
+    &__main {
+        @extend .text;
+        display: block;
+        max-width: 75%;
+        font-size: 32px;
+        color: var(--color-text-third);
+        margin-bottom: 90px;
+        text-align: center;
+        padding: 30px;
+        border: 2px solid transparent;
+
+        @media screen and (max-width: 768px) {
+            & {
+                font-size: 24px;
+            }
+        }
+    }
+
+    &__big {
+        font-size: 18px;
+        margin: 0 5px;
+    }
+
+    &__topic {
+        display: block;
+        @extend .text;
+        max-width: 100%;
+        color: var(--color-text-third);
+        word-wrap: break-word;
+        overflow-y: auto;
+        max-height: 120px;
+    }
+
+    &_error {
+        font-weight: 500;
+        font-size: 20px;
+        margin-bottom: 40px;
+        color: var(--color-text-first);
+    }
+}
+
+.light-theme {
+    .text {
+        &__main {
+            background: rgba(255, 255, 255, .8);
+            border-radius: var(--radius);
+            border: 2px solid var(--color-elem-first);
+            color: var(--color-text-first);
+        }
+    }
+}

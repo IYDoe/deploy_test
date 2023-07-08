@@ -1,0 +1,25 @@
+{
+  "name": "client-server-template-with-vite",
+  "private": true,
+  "scripts": {
+    "bootstrap": "yarn && node init.js && lerna clean && yarn && lerna bootstrap",
+    "build": "lerna run build:ssr --scope=client && lerna run build",
+    "dev": "lerna run dev --scope=server",
+    "test": "lerna run test",
+    "lint": "lerna run lint",
+    "lint:style": "lerna run lint:style --scope=client",
+    "format": "lerna run format",
+    "preview": "lerna run preview"
+  },
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=15"
+  },
+  "devDependencies": {
+    "@evilmartians/lefthook": "^1.1.1",
+    "lerna": "^5.4.3"
+  }
+}
