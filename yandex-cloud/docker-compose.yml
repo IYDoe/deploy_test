@@ -13,8 +13,8 @@ services:
         ports:
             - "{{ env.PORT }}:80"
         environment:
-            - CLIENT_PORT=${CLIENT_PORT}
-            - SERVER_PORT=${SERVER_PORT}
+            - "CLIENT_PORT={{ env.CLIENT_PORT }}"
+            - "SERVER_PORT={{ env.SERVER_PORT }}"
         networks: 
             - awesome
 
@@ -25,7 +25,7 @@ services:
             context: .
             dockerfile: Dockerfile.server
             args:
-                SERVER_PORT: ${SERVER_PORT}
+                SERVER_PORT: {{ env.SERVER_PORT }}
         depends_on:
             client: 
                 condition: service_started
@@ -33,7 +33,7 @@ services:
                 condition: service_healthy
         restart: always
         ports:
-            - "${SERVER_PORT}:${SERVER_PORT}"
+            - "{{ env.SERVER_PORT }}:{{ env.SERVER_PORT }}"
         environment:
             CLIENT_URL: prakticum-client:80
             SERVER_PORT:  {{ env.SERVER_PORT }}
