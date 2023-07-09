@@ -7,79 +7,92 @@ on:
     types: [created]
     workflow_dispatch:
 
+# id: ajee2pivv04qgcjrkaqa
+# service_account_id: ajelcg32o72fpmi3easu
+# created_at: "2023-07-09T05:28:14.269490009Z"
+# key_algorithm: RSA_2048
+
+# token: y0_AgAEA7qjtd6XAATuwQAAAADnWl22L9Qs61yoRzio8m3ApT_BRjQaGTs
+# cloud-id: b1guukn1iv5qef92js11
+# folder-id: b1glqv9gnselb8d5rjem
+# compute-default-zone: ru-central1-a
+
 env:
-  FRONTEND_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/text-to-image-frontend:${{ github.sha }}
-  BACKEND_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/text-to-image-api:${{ github.sha }}
-  NGINX_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/text-to-image-nginx:${{ github.sha }}
+    NODE_ENV: production
+    PORT: 3000
+    # secrets
+    CR_REGISTRY: crpjg77b02fiuqc5n10v
+    CR_REPO: deploy_test
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    POSTGRES_DB: postgres
+    POSTGRES_PORT: 5432
+    POSTGRES_HOST: ''
+    # secrets yc
+    YC_VM_USERNAME: jsdfksdhf
+    YC_VM_SSH: skjdfsdjkf
+    YC_FOLDER_ID: skjdflkjdf
+    YC_VM_NAME: sdfsdf
+    YC_VM_SUBNET_ID: sdjfd
+    IMAGE_NAME: cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_REPO }}:latest
 
 jobs:
-  build-backend:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Login to Dockerhub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
-      - name: Setup Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Build Backend
-        uses: docker/build-push-action@v3
-        with:
-          context: ./src/backend
-          file: ./src/backend/Dockerfile
-          push: true
-          tags: ${{ env.BACKEND_IMAGE }}
-
-  build-frontend:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      # initialize repo
+      - uses: actions/checkout@v2
 
-      - name: Login to Dockerhub
-        uses: docker/login-action@v2
+      - name: Login to Yandex Cloud Container Registry
+        id: login-cr
+        uses: yc-actions/yc-cr-login@v1
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
 
-      - name: Setup Buildx
-        uses: docker/setup-buildx-action@v2
+      - name: Build, tag, and push image to Yandex Cloud Container Registry
+        env:
+          CR_REGISTRY: ${{ env.CR_REGISTRY }}
+          CR_REPOSITORY: ${{ env.CR_REPO }}
+          IMAGE_TAG: ${{ github.sha }}
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+          POSTGRES_PORT: ${{ env.POSTGRES_PORT }}
+          POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
+          NODE_ENV: ${{ env.NODE_ENV }}
+          PORT: ${{ env.PORT }}
+        run: |
+          docker build -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:latest .
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:latest
 
-      - name: Build Frontend
-        uses: docker/build-push-action@v3
+      - name: Deploy COI VM
+        id: deploy-coi
+        uses: yc-actions/yc-coi-deploy@v1
+        env:
+          YC_VM_USERNAME: ${{ env.YC_VM_USERNAME }}
+          YC_VM_SSH: ${{ env.YC_VM_SSH }}
+          CR_REGISTRY: ${{ env.CR_REGISTRY }}
+          CR_REPOSITORY: ${{ env.CR_REPO }}
+          IMAGE_TAG: ${{ github.sha }}
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+          POSTGRES_PORT: ${{ env.POSTGRES_PORT }}
+          POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          NODE_ENV: ${{ env.NODE_ENV }}
+          PORT: ${{ env.PORT }}
         with:
-          context: src/frontend
-          file: ./src/frontend/Dockerfile
-          push: true
-          build-args: SERVER_URL=${{ secrets.API_SERVER_URL }}
-          tags: ${{ env.FRONTEND_IMAGE }}
-
-  build-nginx:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Login to Dockerhub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
-      - name: Setup Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Build Nginx for together composing
-        uses: docker/build-push-action@v3
-        with:
-          context: ./nginx
-          file: ./nginx/Dockerfile
-          push: true
-          tags: ${{ env.NGINX_IMAGE }}
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          folder-id: ${{ env.YC_FOLDER_ID }}
+          vm-name: ${{ env.YC_VM_NAME }}
+          vm-service-account-name: ${{ env.YC_VM_USERNAME }}
+          vm-subnet-id: ${{ env.YC_VM_SUBNET_ID }}
+          vm-cores: 2
+          vm-memory: 2GB
+          vm-core-fraction: 50
+          vm-disk-size: 10GB
+          vm-zone-id: ru-central1-b
+          vm-platform-id: standard-v3
+          user-data-path: .yc/user-data.yml
+          docker-compose-path: ./.yc/docker-compose.yml
