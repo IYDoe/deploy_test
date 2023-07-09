@@ -78,7 +78,7 @@ jobs:
           folder-id: b1gl6pj9639tbgchb5k5
           vm-name: default
           vm-service-account-name: yudin24
-          vm-subnet-id: enpptjm8agopat1il2hd
+          vm-subnet-id: e9bcea8o3h3gd3al64si
           vm-cores: 2
           vm-memory: 2GB
           vm-core-fraction: 50
