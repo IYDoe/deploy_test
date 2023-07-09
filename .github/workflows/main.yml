@@ -23,6 +23,7 @@ env:
     # YC_VM_SUBNET_ID: sdjfd
     IMAGE_NAME: cr.yandex/${{ secrets.CR_REGISTRY }}/${{ secrets.CR_REPO }}:latest
 
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
