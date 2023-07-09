@@ -9,7 +9,7 @@ FROM base as builder
 
 COPY package.json yarn.lock
 RUN yarn install --frozen-lockfile
-RUN yarn global add lerna
+RUN yarn bootstrap
 
 COPY . .
 
