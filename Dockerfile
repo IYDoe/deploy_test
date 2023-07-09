@@ -1,5 +1,5 @@
 ARG NODE_VERSION=16
-ARG SERVER_PORT=3001
+ARG CLIENT_PORT=3001
 
 FROM node:$NODE_VERSION-buster as base
 
@@ -9,21 +9,18 @@ FROM base as builder
 
 COPY package.json yarn.lock
 RUN yarn install --frozen-lockfile
-RUN yarn bootstrap
 
 COPY . .
 
 RUN yarn lerna bootstrap
-RUN rm -rf /app/packages/server/dist/ && yarn build --scope=server
+RUN rm -rf /app/packages/server/dist/ && yarn build --scope=client
 
 
-FROM node:$NODE_VERSION-buster-slim as production
+FROM nginx:latest as production
 WORKDIR /app
 
-COPY --from=builder /app/packages/server/dist/ /app/
-COPY --from=builder /app/packages/server/package.json /app/package.json
-COPY --from=builder /app/packages/client/dist-ssr/client.cjs /app/ssr/
-RUN yarn install --production=true
+COPY --from=builder /app/packages/client/dist/ /app/
+COPY --from=builder /app/packages/client/nginx.conf /etc/nginx/nginx.conf
 
-EXPOSE $SERVER_PORT
-CMD [ "node", "/app/index.js" ]
+EXPOSE $CLIENT_PORT
+CMD [ "nginx", "-g", "daemon off;" ]
