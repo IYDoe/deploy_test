@@ -3,6 +3,9 @@ ARG CLIENT_PORT=3001
 
 FROM node:$NODE_VERSION-buster as base
 
+RUN yarn global add lerna
+RUN yarn lerna bootstrap
+
 WORKDIR /app
 
 FROM base as builder
@@ -12,7 +15,7 @@ RUN yarn install --frozen-lockfile
 
 COPY . .
 
-RUN yarn lerna bootstrap
+
 RUN rm -rf /app/packages/server/dist/ && yarn build --scope=client
 
 
