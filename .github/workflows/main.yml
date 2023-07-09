@@ -23,7 +23,6 @@ env:
 
   CLIENT_PORT: 3001
   SERVER_PORT: 3000
-
   POSTGRES_IMAGE: cr.yandex/${{ secrets.CR_REGISTRY_POSTGRES }}/postgres:latest
 
 jobs:
@@ -38,23 +37,23 @@ jobs:
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
 
-      - name: Build and push client image to Yandex Cloud Container Registry
-        env:
-          CR_REGISTRY: ${{ secrets.CR_REGISTRY }}
-          CR_REPO_CLIENT: client
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build --file Dockerfile.client -t cr.yandex/$CR_REGISTRY/$CR_REPO_CLIENT:${IMAGE_TAG} .
-          docker push cr.yandex/$CR_REGISTRY/$CR_REPO_CLIENT:${IMAGE_TAG}
+      # - name: Build and push client image to Yandex Cloud Container Registry
+      #   env:
+      #     CR_REGISTRY: ${{ secrets.CR_REGISTRY }}
+      #     CR_REPO_CLIENT: client
+      #     IMAGE_TAG: ${{ github.sha }}
+      #   run: |
+      #     docker build --file Dockerfile.client -t cr.yandex/$CR_REGISTRY/$CR_REPO_CLIENT:${IMAGE_TAG} .
+      #     docker push cr.yandex/$CR_REGISTRY/$CR_REPO_CLIENT:${IMAGE_TAG}
 
-      - name: Build and push server image to Yandex Cloud Container Registry
-        env:
-          CR_REGISTRY: ${{ secrets.CR_REGISTRY }}
-          CR_REPO_SERVER: server
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build --file Dockerfile.server -t cr.yandex/$CR_REGISTRY/$CR_REPO_SERVER:${IMAGE_TAG} .
-          docker push cr.yandex/$CR_REGISTRY/$CR_REPO_SERVER:${IMAGE_TAG}
+      # - name: Build and push server image to Yandex Cloud Container Registry
+      #   env:
+      #     CR_REGISTRY: ${{ secrets.CR_REGISTRY }}
+      #     CR_REPO_SERVER: server
+      #     IMAGE_TAG: ${{ github.sha }}
+      #   run: |
+      #     docker build --file Dockerfile.server -t cr.yandex/$CR_REGISTRY/$CR_REPO_SERVER:${IMAGE_TAG} .
+      #     docker push cr.yandex/$CR_REGISTRY/$CR_REPO_SERVER:${IMAGE_TAG}
 
       - name: Deploy COI VM
         id: deploy-coi
