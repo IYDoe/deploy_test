@@ -75,7 +75,7 @@ jobs:
           PORT: ${{ env.PORT }}
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
-          folder-id: ${{ secrets.YC_FOLDER_ID }}
+          folder-id: enpptjm8agopat1il2hd
           vm-name: ${{ secrets.YC_VM_NAME }}
           vm-service-account-name: ${{ secrets.YC_VM_USERNAME }}
           vm-subnet-id: ${{ secrets.YC_VM_SUBNET_ID }}
@@ -87,4 +87,3 @@ jobs:
           vm-platform-id: standard-v3
           user-data-path: yandex-cloud/user-data.yml
           docker-compose-path: ./yandex-cloud/docker-compose.yml
-          
