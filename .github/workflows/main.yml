@@ -75,8 +75,8 @@ jobs:
           PORT: ${{ env.PORT }}
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
-          folder-id: enpptjm8agopat1il2hd
-          vm-name: ${{ secrets.YC_VM_NAME }}
+          folder-id: b1gl6pj9639tbgchb5k5
+          vm-name: default
           vm-service-account-name: ${{ secrets.YC_VM_USERNAME }}
           vm-subnet-id: ${{ secrets.YC_VM_SUBNET_ID }}
           vm-cores: 2
