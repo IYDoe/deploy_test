@@ -77,8 +77,8 @@ jobs:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           folder-id: b1gl6pj9639tbgchb5k5
           vm-name: default
-          vm-service-account-name: ${{ secrets.YC_VM_USERNAME }}
-          vm-subnet-id: ${{ secrets.YC_VM_SUBNET_ID }}
+          vm-service-account-name: yudin24
+          vm-subnet-id: enpptjm8agopat1il2hd
           vm-cores: 2
           vm-memory: 2GB
           vm-core-fraction: 50
