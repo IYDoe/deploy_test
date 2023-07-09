@@ -70,7 +70,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build --file Dockerfile.client -t cr.yandex/$CR_REGISTRY/$CR_REPO_CLIENT:${IMAGE_TAG} .
-          docker push --file Dockerfile.client cr.yandex/$CR_REGISTRY/$CR_REPO_CLIENT:${IMAGE_TAG}
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPO_CLIENT:${IMAGE_TAG}
 
       - name: Build and push server image to Yandex Cloud Container Registry
         env:
@@ -79,7 +79,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build --file Dockerfile.server -t cr.yandex/$CR_REGISTRY/$CR_REPO_SERVER:${IMAGE_TAG} .
-          docker push --file Dockerfile.server cr.yandex/$CR_REGISTRY/$CR_REPO_SERVER:${IMAGE_TAG}    
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPO_SERVER:${IMAGE_TAG}    
 
       # - name: Build, tag, and push image to Yandex Cloud Container Registry
       #   env:
