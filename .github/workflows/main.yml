@@ -102,8 +102,6 @@ jobs:
         uses: yc-actions/yc-coi-deploy@v1
         env:
           YC_VM_USERNAME: ${{ secrets.YC_VM_USERNAME }}
-          CLIENT_IMAGE: ${{ secrets.CLIENT_IMAGE }}
-          SERVER_IMAGE: ${{ secrets.SERVER_IMAGE }}
           CR_REGISTRY: ${{ secrets.CR_REGISTRY }}
           CR_REPOSITORY: ${{ secrets.CR_REPO }}
           IMAGE_TAG: ${{ github.sha }}
@@ -115,10 +113,12 @@ jobs:
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
           NODE_ENV: ${{ env.NODE_ENV }}
           PORT: ${{ env.PORT }}
+          CLIENT_IMAGE: cr.yandex/$CR_REGISTRY/$CR_REPO_CLIENT:${IMAGE_TAG}
+          SERVER_IMAGE: cr.yandex/$CR_REGISTRY/$CR_REPO_SERVER:${IMAGE_TAG}
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           folder-id: b1gl6pj9639tbgchb5k5
-          vm-name: default
+          vm-name: game
           vm-service-account-name: yudin24
           vm-subnet-id: e2lr9s38d7d9b0vgc53e
           vm-cores: 2
