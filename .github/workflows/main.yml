@@ -1,131 +1,131 @@
-name: Push to GitHub Container Registry
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: set lower case owner name
-        run: |
-          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
-        env:
-          OWNER: '${{ github.repository_owner }}'
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push client image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: Dockerfile.client
-          push: true
-          tags: ghcr.io/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/client:${{ github.sha }}
-
-      - name: Build and push server image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: Dockerfile.server
-          push: true
-          tags: ghcr.io/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/server:${{ github.sha }}
-          
-# name: Deploy Yandex Cloud
+# name: Push to GitHub Container Registry
 
 # on:
 #   push:
-#     branches: [main]
-#   release:
-#     types: [created]
-#     workflow_dispatch:
-
-# env:
-#   NODE_ENV: production
-#   CLIENT_PORT: 3001
-#   SERVER_PORT: 3000
-
-#   POSTGRES_USER: postgres
-#   POSTGRES_PASSWORD: postgres
-#   POSTGRES_DB: postgres
-#   POSTGRES_PORT: 5432
-#   POSTGRES_HOST: ''
-
-#   IMAGE_NAME: cr.yandex/${{ secrets.CR_REGISTRY }}/${{ secrets.CR_REPO }}:latest
-
-#   CLIENT_IMAGE: cr.yandex/${{ secrets.CR_REGISTRY }}/client:latest
-#   SERVER_IMAGE: cr.yandex/${{ secrets.CR_REGISTRY }}/server:latest
-
-#   POSTGRES_IMAGE: cr.yandex/${{ secrets.CR_REGISTRY_POSTGRES }}/postgres:latest
+#     branches:
+#       - main
 
 # jobs:
-#   deploy:
+#   build-and-push:
 #     runs-on: ubuntu-latest
+
 #     steps:
-#       - uses: actions/checkout@v2
-
-#       - name: Login to Yandex Cloud Container Registry
-#         id: login-cr
-#         uses: yc-actions/yc-cr-login@v1
-#         with:
-#           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
-
-#       - name: Build and push client image to Yandex Cloud Container Registry
-#         env:
-#           CR_REGISTRY: ${{ secrets.CR_REGISTRY }}
-#           CR_REPO_CLIENT: client
-#           IMAGE_TAG: ${{ github.sha }}
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+#       - name: set lower case owner name
 #         run: |
-#           docker build --file Dockerfile.client -t cr.yandex/$CR_REGISTRY/$CR_REPO_CLIENT:${IMAGE_TAG} .
-#           docker push cr.yandex/$CR_REGISTRY/$CR_REPO_CLIENT:${IMAGE_TAG}
-
-#       - name: Build and push server image to Yandex Cloud Container Registry
+#           echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
 #         env:
-#           CR_REGISTRY: ${{ secrets.CR_REGISTRY }}
-#           CR_REPO_SERVER: server
-#           IMAGE_TAG: ${{ github.sha }}
-#         run: |
-#           docker build --file Dockerfile.server -t cr.yandex/$CR_REGISTRY/$CR_REPO_SERVER:${IMAGE_TAG} .
-#           docker push cr.yandex/$CR_REGISTRY/$CR_REPO_SERVER:${IMAGE_TAG}
-
-#       - name: Deploy COI VM
-#         id: deploy-coi
-#         uses: yc-actions/yc-coi-deploy@v1
-#         env:
-#           YC_VM_USERNAME: ${{ secrets.YC_VM_USERNAME }}
-#           CLIENT_IMAGE: ${{ secrets.CLIENT_IMAGE }}
-#           SERVER_IMAGE: ${{ secrets.SERVER_IMAGE }}
-#           CR_REGISTRY: ${{ secrets.CR_REGISTRY }}
-#           CR_REPOSITORY: ${{ secrets.CR_REPO }}
-#           IMAGE_TAG: ${{ github.sha }}
-#           POSTGRES_USER: ${{ env.POSTGRES_USER }}
-#           POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
-#           POSTGRES_DB: ${{ env.POSTGRES_DB }}
-#           POSTGRES_PORT: ${{ env.POSTGRES_PORT }}
-#           POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
-#           IMAGE_NAME: ${{ env.IMAGE_NAME }}
-#           NODE_ENV: ${{ env.NODE_ENV }}
-#           PORT: ${{ env.PORT }}
+#           OWNER: '${{ github.repository_owner }}'
+#       - name: Login to GitHub Container Registry
+#         uses: docker/login-action@v1
 #         with:
-#           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
-#           folder-id: b1gl6pj9639tbgchb5k5
-#           vm-name: default
-#           vm-service-account-name: yudin24
-#           vm-subnet-id: e2lr9s38d7d9b0vgc53e
-#           vm-cores: 2
-#           vm-memory: 2GB
-#           vm-core-fraction: 50
-#           vm-disk-size: 31GB
-#           vm-zone-id: ru-central1-b
-#           vm-platform-id: standard-v3
-#           user-data-path: yandex-cloud/user-data.yml
-#           docker-compose-path: ./yandex-cloud/docker-compose.yml
+#           registry: ghcr.io
+#           username: ${{ github.actor }}
+#           password: ${{ secrets.GITHUB_TOKEN }}
+
+#       - name: Build and push client image
+#         uses: docker/build-push-action@v2
+#         with:
+#           context: .
+#           file: Dockerfile.client
+#           push: true
+#           tags: ghcr.io/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/client:${{ github.sha }}
+
+#       - name: Build and push server image
+#         uses: docker/build-push-action@v2
+#         with:
+#           context: .
+#           file: Dockerfile.server
+#           push: true
+#           tags: ghcr.io/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/server:${{ github.sha }}
+
+name: Deploy Yandex Cloud
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [created]
+    workflow_dispatch:
+
+env:
+  NODE_ENV: production
+  CLIENT_PORT: 3001
+  SERVER_PORT: 3000
+
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_DB: postgres
+  POSTGRES_PORT: 5432
+  POSTGRES_HOST: ''
+
+  IMAGE_NAME: cr.yandex/${{ secrets.CR_REGISTRY }}/${{ secrets.CR_REPO }}:latest
+
+  CLIENT_IMAGE: cr.yandex/${{ secrets.CR_REGISTRY }}/client:latest
+  SERVER_IMAGE: cr.yandex/${{ secrets.CR_REGISTRY }}/server:latest
+
+  POSTGRES_IMAGE: cr.yandex/${{ secrets.CR_REGISTRY_POSTGRES }}/postgres:latest
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Login to Yandex Cloud Container Registry
+        id: login-cr
+        uses: yc-actions/yc-cr-login@v1
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+      - name: Build and push client image to Yandex Cloud Container Registry
+        env:
+          CR_REGISTRY: ${{ secrets.CR_REGISTRY }}
+          CR_REPO_CLIENT: client
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build --file Dockerfile.client -t cr.yandex/$CR_REGISTRY/$CR_REPO_CLIENT:${IMAGE_TAG} .
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPO_CLIENT:${IMAGE_TAG}
+
+      - name: Build and push server image to Yandex Cloud Container Registry
+        env:
+          CR_REGISTRY: ${{ secrets.CR_REGISTRY }}
+          CR_REPO_SERVER: server
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build --file Dockerfile.server -t cr.yandex/$CR_REGISTRY/$CR_REPO_SERVER:${IMAGE_TAG} .
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPO_SERVER:${IMAGE_TAG}
+
+      - name: Deploy COI VM
+        id: deploy-coi
+        uses: yc-actions/yc-coi-deploy@v1
+        env:
+          YC_VM_USERNAME: ${{ secrets.YC_VM_USERNAME }}
+          CLIENT_IMAGE: ${{ secrets.CLIENT_IMAGE }}
+          SERVER_IMAGE: ${{ secrets.SERVER_IMAGE }}
+          CR_REGISTRY: ${{ secrets.CR_REGISTRY }}
+          CR_REPOSITORY: ${{ secrets.CR_REPO }}
+          IMAGE_TAG: ${{ github.sha }}
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+          POSTGRES_PORT: ${{ env.POSTGRES_PORT }}
+          POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          NODE_ENV: ${{ env.NODE_ENV }}
+          PORT: ${{ env.PORT }}
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          folder-id: b1gl6pj9639tbgchb5k5
+          vm-name: default
+          vm-service-account-name: yudin24
+          vm-subnet-id: e2lr9s38d7d9b0vgc53e
+          vm-cores: 2
+          vm-memory: 2GB
+          vm-core-fraction: 50
+          vm-disk-size: 31GB
+          vm-zone-id: ru-central1-b
+          vm-platform-id: standard-v3
+          user-data-path: yandex-cloud/user-data.yml
+          docker-compose-path: ./yandex-cloud/docker-compose.yml
