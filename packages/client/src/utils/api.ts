@@ -1,6 +1,6 @@
 const prodUrl = 'https://game-machine.ya-praktikum.tech';
 
-export const serverUrl = __DOCKER_BUILD__ ? `${prodUrl}:${__SERVER_PORT__}` : `http://localhost:${__SERVER_PORT__}`;
+export const serverUrl = process.env.DOCKER_BUILD === 'true' ? `${prodUrl}:${process.env.SERVER_PORT}` : `http://localhost:${process.env.SERVER_PORT}`;
 
 export const Urls = {
     baseUrl: `${serverUrl}/api/v2`,
