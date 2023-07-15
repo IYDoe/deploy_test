@@ -39,7 +39,7 @@ jobs:
           file: Dockerfile.server
           push: true
           tags: ghcr.io/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/server:${{ github.sha }}
-          
+
       - name: Deploy COI VM
         id: deploy-coi
         uses: yc-actions/yc-coi-deploy@v1
@@ -47,15 +47,6 @@ jobs:
           YC_VM_USERNAME: ${{ secrets.YC_VM_USERNAME }}
           CR_REGISTRY: ${{ secrets.CR_REGISTRY }}
           CR_REPOSITORY: ${{ secrets.CR_REPO }}
-          IMAGE_TAG: ${{ github.sha }}
-          POSTGRES_USER: ${{ env.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ env.POSTGRES_DB }}
-          POSTGRES_PORT: ${{ env.POSTGRES_PORT }}
-          POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
-          IMAGE_NAME: ${{ env.IMAGE_NAME }}
-          NODE_ENV: ${{ env.NODE_ENV }}
-          PORT: ${{ env.PORT }}
           CLIENT_IMAGE: ghcr.io/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/client:${{ github.sha }}
           SERVER_IMAGE: ghcr.io/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/server:${{ github.sha }}
         with:
@@ -72,7 +63,6 @@ jobs:
           vm-platform-id: standard-v3
           user-data-path: yandex-cloud/user-data.yml
           docker-compose-path: ./yandex-cloud/docker-compose.yml
-
 # name: Deploy Yandex Cloud
 
 # on:

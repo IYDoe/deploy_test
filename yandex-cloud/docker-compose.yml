@@ -33,7 +33,7 @@ services:
         condition: service_healthy
     restart: always
     ports:
-      - '{{ env.SERVER_PORT }}:{{ env.SERVER_PORT }}'
+      - '3001:3001'
     environment:
       CLIENT_URL: prakticum-client:80
       SERVER_PORT: 3001
