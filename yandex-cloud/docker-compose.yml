@@ -16,8 +16,8 @@ services:
             - "443:443"
             - "3001:80"
         environment:
-            - CLIENT_PORT=${CLIENT_PORT}
-            - SERVER_PORT=${SERVER_PORT}
+            - CLIENT_PORT=3001
+            - SERVER_PORT=3000
         networks: 
             - awesome
         links:
