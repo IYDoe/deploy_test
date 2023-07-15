@@ -1,4 +1,4 @@
-ARG NODE_VERSION=16
+ARG NODE_VERSION=18
 ARG SERVER_PORT=3001
 
 FROM node:$NODE_VERSION-buster as base
@@ -7,20 +7,25 @@ WORKDIR /app
 
 FROM base as builder
 
-COPY package.json yarn.lock ./
+COPY package.json yarn.lock
 RUN yarn install --frozen-lockfile
 
 COPY . .
 
-RUN yarn lerna bootstrap
-RUN rm -rf /app/packages/server/dist/ && yarn build --scope=server
+RUN yarn install
+RUN rm -rf /app/packages/server/dist/ && yarn build
 
 
 FROM node:$NODE_VERSION-buster-slim as production
 WORKDIR /app
 
+COPY --from=builder /app/ssl/cert.crt /etc/letsencrypt/live/game-machine.ya-praktikum.tech/cert.crt
+COPY --from=builder /app/ssl/privkey.key /etc/letsencrypt/live/game-machine.ya-praktikum.tech/privkey.key
+COPY --from=builder /app/ssl/chain.pem /etc/letsencrypt/live/game-machine.ya-praktikum.tech/chain.pem
+
 COPY --from=builder /app/packages/server/dist/ /app/
 COPY --from=builder /app/packages/server/package.json /app/package.json
+COPY --from=builder /app/packages/client/dist/index.html /app/client/index.html
 COPY --from=builder /app/packages/client/dist-ssr/client.cjs /app/ssr/
 RUN yarn install --production=true
 

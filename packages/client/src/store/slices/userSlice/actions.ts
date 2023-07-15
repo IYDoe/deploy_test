@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { Urls } from '../../../utils/api'
+import { Urls, serverUrl } from '../../../utils/api'
 import { request } from '../../../utils/request'
 import { UserData } from '../../../types/user'
 import { SigninData } from '../../../interfaces'
@@ -85,15 +85,17 @@ export const oAuthYandex = createAsyncThunk(
     }
 )
 
-export const getUserInfo = createAsyncThunk('user/get_user', async () => {
+export const getUserInfo = createAsyncThunk('user/get_user', async (cookie: string | undefined) => {
     const { baseUrl, userInfo } = Urls
     const options = {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            'Cookie': cookie ? cookie : ''
         },
         credentials: 'include',
     }
+
     const response = await request(`${baseUrl}${userInfo}`, options)
     if (response.ok) {
         return await response.json()
@@ -214,7 +216,7 @@ export const saveTheme = createAsyncThunk(
             body: JSON.stringify({ data }),
         }
 
-        const response = await request(themeSet, options)
+        const response = await request(`${serverUrl}${themeSet}`, options)
 
         if (response.ok) {
             return await response.json()
@@ -235,7 +237,7 @@ export const getTheme = createAsyncThunk(
             body: JSON.stringify({ data }),
         }
 
-        const response = await request(themeGet, options)
+        const response = await request(`${serverUrl}${themeGet}`, options)
 
         if (response.ok) {
             return await response.json()
@@ -257,7 +259,7 @@ export const saveInnerUser = createAsyncThunk(
             body: JSON.stringify({ data }),
         }
 
-        const response = await request(innerUserSet, options)
+        const response = await request(`${serverUrl}${innerUserSet}`, options)
 
         if (response.ok) {
             return await response.json()
@@ -279,7 +281,7 @@ export const editInnerUser = createAsyncThunk(
             body: JSON.stringify({ data }),
         }
 
-        const response = await request(innerUserEdit, options)
+        const response = await request(`${serverUrl}${innerUserEdit}`, options)
 
         if (response.ok) {
             return await response.json()

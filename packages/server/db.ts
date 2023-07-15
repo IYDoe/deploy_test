@@ -5,6 +5,7 @@ import { topicModel } from './models/topicModel'
 import { commentModel } from './models/commentModel'
 import { replyModel } from './models/replyModel'
 import { reactionModel } from './models/reactionModel'
+
 const {
     POSTGRES_USER,
     POSTGRES_PASSWORD,
@@ -33,7 +34,7 @@ export const User = sequelize.define('User', userModel, {
     indexes: [
         {
             unique: true,
-            fields: [ 'login', 'userId' ],
+            fields: [ 'login' ],
         },
     ],
 })

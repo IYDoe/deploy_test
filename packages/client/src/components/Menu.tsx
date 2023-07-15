@@ -53,7 +53,7 @@ export const Menu = ({ items }: MenuProps) => {
                 if (item.url || item.clickHandler) {
                     return (
                         <MenuItem
-                            key={item.id}
+                            key={`${item.url}_${item.title}`}
                             index={key}
                             isActive={key === activeIndex}
                             url={item.url}

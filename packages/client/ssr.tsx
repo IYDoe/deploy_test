@@ -8,9 +8,12 @@ import { routes } from './src/utils/routes';
 import { configureStore } from '@reduxjs/toolkit';
 import { forumReducer } from './src/store/slices/forumSlice/forumSlice';
 import { leaderBoardReducer } from './src/store/slices/leaderBoardSlice/leaderBoardSlice';
-import { userReducer } from './src/store/slices/userSlice/userSlice';
+import { changeTheme, userReducer } from './src/store/slices/userSlice/userSlice';
+import { getTheme, getUserInfo, saveInnerUser } from './src/store/slices/userSlice/actions';
 
-export async function render(url: string) {
+export async function render(url: string, authCookie: string) {
+    let isLightTheme = false;
+
     const [ pathname ] = url.split('?')
     const currentRoute = routes.find(route => pathname === route.path)
     const store = configureStore({
@@ -20,6 +23,32 @@ export async function render(url: string) {
             forum: forumReducer,
         }
     })
+
+    const userDataRes = await store.dispatch(getUserInfo(authCookie))
+
+    const setTheme = async () => {
+        const { login } = userDataRes.payload
+        const innerUser = await store.dispatch(saveInnerUser({ login }))
+
+        if (innerUser.payload === undefined) {
+            return;
+        }
+
+        const { userId } = innerUser.payload
+        const theme = await store.dispatch(getTheme({ userId }))
+
+        if (theme.payload === undefined) {
+            return;
+        }
+
+        isLightTheme = theme.payload.isLightTheme
+
+        store.dispatch(changeTheme(isLightTheme))
+    }
+
+    if (userDataRes.payload !== undefined) {
+        await setTheme()
+    }
 
     if (currentRoute && currentRoute.loader) {
         await currentRoute.loader(store.dispatch);
@@ -39,5 +68,5 @@ export async function render(url: string) {
 
     const preloadedState = store.getState();
 
-    return [ appHtml, preloadedState ]
+    return [ appHtml, preloadedState, isLightTheme ]
 }

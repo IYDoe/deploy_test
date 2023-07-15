@@ -8,6 +8,11 @@ import { setFinishStatus, setDeadPlayer } from '../store/slices/gameSlice/gameSl
 import { useNavigate } from 'react-router-dom'
 import { Paths } from '../utils/paths'
 
+interface ScreenSize {
+    width: number,
+    height: number
+}
+
 export const GamePage = () => {
     let game: Game | null = null
     const [ stopTimer, setStopTimer ] = useState(false)
@@ -17,6 +22,7 @@ export const GamePage = () => {
     const lvls = [ lvl_1 ]
     const navigate = useNavigate()
     const dispatch = useAppDispatch()
+    const [ screenSize, setScreenSize ] = useState<ScreenSize>({ width: 0, height: 0 })
 
     const finishLvl = (status: boolean) => {
         document.exitPointerLock()
@@ -82,24 +88,30 @@ export const GamePage = () => {
     }
 
     useEffect(() => {
-        window.addEventListener('keydown', handleKeyPressEsc);
-        init()
+        if (screenSize.width !== 0 && screenSize.height !== 0) {
+            window.addEventListener('keydown', handleKeyPressEsc);
+            init()
+        }
 
         return () => {
-            window.removeEventListener('keydown', handleKeyPressEsc);
-            document.removeEventListener(
-                'pointerlockchange',
-                handlePointerLockChange
-            )
+            window.removeEventListener('keydown', handleKeyPressEsc)
+            document.removeEventListener('pointerlockchange', handlePointerLockChange)
         }
+    }, [ screenSize ])
+
+    useEffect(() => {
+        setScreenSize({
+            width: window.innerWidth,
+            height: window.innerHeight,
+        })
     }, [])
 
     return (
         <div>
             <canvas
                 ref={refCanvas}
-                width={window.innerWidth}
-                height={window.innerHeight}
+                width={screenSize.width}
+                height={screenSize.height}
                 onClick={() => refCanvas.current?.requestPointerLock()}>
                 Необходимо включить поддержку JavaScript в вашем браузере
             </canvas>

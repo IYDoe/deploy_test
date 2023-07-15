@@ -1,30 +1,33 @@
-ARG NODE_VERSION=16
+ARG NODE_VERSION=18
+ARG CLIENT_PORT=3001
+
 FROM node:$NODE_VERSION-buster as base
 
-RUN yarn global add lerna
+ARG DOCKER_BUILD
+ENV VITE_DOCKER_BUILD=${DOCKER_BUILD}
 
 WORKDIR /app
 
 FROM base as builder
 
-COPY package.json yarn.lock ./
-
+COPY package.json yarn.lock
 RUN yarn install --frozen-lockfile
 
 COPY . .
 
-RUN cd packages/client && yarn install --frozen-lockfile
-RUN cd packages/server && yarn install --frozen-lockfile
+RUN yarn install
+RUN rm -rf /app/packages/server/dist/ && yarn build --scope=client
 
-RUN cd packages/client && yarn build
 
 FROM nginx:latest as production
-
 WORKDIR /app
+
+COPY --from=builder /app/ssl/cert.crt /etc/letsencrypt/live/game-machine.ya-praktikum.tech/cert.crt
+COPY --from=builder /app/ssl/privkey.key /etc/letsencrypt/live/game-machine.ya-praktikum.tech/privkey.key
+COPY --from=builder /app/ssl/chain.pem /etc/letsencrypt/live/game-machine.ya-praktikum.tech/chain.pem
 
 COPY --from=builder /app/packages/client/dist/ /app/
 COPY --from=builder /app/packages/client/nginx.conf /etc/nginx/nginx.conf
 
-EXPOSE 3001
-
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE $CLIENT_PORT
+CMD [ "nginx", "-g", "daemon off;" ]

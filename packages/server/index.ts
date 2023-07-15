@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 import cors from 'cors'
-import axios from 'axios'
+import https from 'https'
 import type { ViteDevServer } from 'vite'
 import { createServer as createViteServer } from 'vite'
 import { createProxyMiddleware } from 'http-proxy-middleware'
@@ -22,10 +22,28 @@ const isDev = () => process.env.NODE_ENV === 'development'
 
 async function startServer() {
     let vite: ViteDevServer | undefined
+    let key, cert, ca;
+
+    if (process.env.DOCKER_BUILD) {
+        key = fs.readFileSync(
+            path.resolve('../etc/letsencrypt/live/game-machine.ya-praktikum.tech', 'privkey.key')
+        )
+        cert = fs.readFileSync(
+            path.resolve('../etc/letsencrypt/live/game-machine.ya-praktikum.tech', 'cert.crt')
+        )
+        ca = fs.readFileSync(
+            path.resolve('../etc/letsencrypt/live/game-machine.ya-praktikum.tech', 'chain.pem')
+        )
+    }
 
     const app = express()
 
-    app.use(cors())
+    const corsOptions = {
+        credentials: true,
+        origin: [ 'https://ya-praktikum.tech' ]
+    };
+
+    app.use(cors(corsOptions))
 
     const port = Number(process.env.SERVER_PORT) || 3000
     const distPath = 'packages/client/dist'
@@ -39,30 +57,17 @@ async function startServer() {
         })
 
         app.use(vite.middlewares)
-    } else {
-        const needProxy = (url?: string) => {
-            const dirs = [ 'assets', 'images', 'fonts' ]
-
-            dirs.forEach(dir => {
-                if (url) {
-                    app.use(
-                        `/${dir}`,
-                        createProxyMiddleware({
-                            target: `http://${url}`,
-                            changeOrigin: true,
-                        })
-                    )
-                } else {
-                    app.use(
-                        `/${dir}`,
-                        express.static(path.resolve(distPath, dir))
-                    )
-                }
-            })
-        }
-
-        needProxy(process.env.CLIENT_URL)
+    } else if (!process.env.DOCKER_BUILD) {
+        app.use('/assets', express.static(path.resolve(distPath, 'assets')))
+        app.use('/images', express.static(path.resolve(distPath, 'images')))
+        app.use('/fonts', express.static(path.resolve(distPath, 'fonts')))
     }
+
+    app.use('/api/v2', createProxyMiddleware({
+        changeOrigin: true,
+        cookieDomainRewrite: { '*': '' },
+        target: 'https://ya-praktikum.tech',
+    }))
 
     addThemeRouters(app)
     addUserRouters(app)
@@ -71,8 +76,16 @@ async function startServer() {
     replyRouters(app)
     reactionRouters(app)
 
+    app.use('/.well-known/acme-challenge/a-WsBQSi0_LXbZj-SAvoBpd7k-31GhIchdfoml0qWZ0', (_, res) => {
+        res.status(200).set({ 'Content-Type': 'text/html' }).end('a-WsBQSi0_LXbZj-SAvoBpd7k-31GhIchdfoml0qWZ0.Q8qWLzxJ5s6w8MlCeVNgxISUdfjAZb1PLlwp7h_JNgE')
+    })
+
     app.use('*', async (req, res, next) => {
         const url = req.originalUrl
+        const authCookie = req.rawHeaders.find((e: string) => {
+            const reg = new RegExp('authCookie');
+            return reg.test(e);
+        });
 
         try {
             let template: string
@@ -84,12 +97,11 @@ async function startServer() {
                 )
                 template = await vite!.transformIndexHtml(url, template)
             } else {
-                if (process.env.CLIENT_URL) {
-                    const response = await axios.get(
-                        `http://${process.env.CLIENT_URL}`
+                if (process.env.DOCKER_BUILD) {
+                    template = fs.readFileSync(
+                        path.resolve('/app/client', 'index.html'),
+                        'utf-8'
                     )
-
-                    template = response.data
                 } else {
                     template = fs.readFileSync(
                         path.resolve(distPath, 'index.html'),
@@ -98,14 +110,14 @@ async function startServer() {
                 }
             }
 
-            let render: (url: string) => Promise<string>
+            let render: (url: string, authCookie: string | undefined) => Promise<string>
 
             if (isDev()) {
                 render = (
                     await vite!.ssrLoadModule(path.resolve(srcPath, 'ssr.tsx'))
                 ).render
             } else {
-                if (process.env.CLIENT_URL) {
+                if (process.env.DOCKER_BUILD) {
                     render = (
                         await import(require.resolve('/app/ssr/client.cjs'))
                     ).render
@@ -118,7 +130,12 @@ async function startServer() {
                 }
             }
 
-            const [ appHtml, preloadedState ] = await render(url)
+            const [ appHtml, preloadedState, isLightTheme ] = await render(url, authCookie)
+
+            if (isLightTheme) {
+                template = template.replace('<body>', '<body class="light-theme">')
+            }
+
             const html = template
                 .replace('<!--ssr-outlet-->', appHtml)
                 .replace(
@@ -137,9 +154,17 @@ async function startServer() {
         }
     })
 
-    app.listen(port, () => {
-        console.log(`  ➜ 🎸 Server is listening on port: ${port}`)
-    })
+    if (process.env.DOCKER_BUILD) {
+        const httpsServer = https.createServer({ key, cert, ca }, app);
+
+        httpsServer.listen(port, () => {
+            console.log(`  ➜ 🎸 HTTPS Server is listening on port: ${port}`)
+        })
+    } else {
+        app.listen(port, () => {
+            console.log(`  ➜ 🎸 Server is listening on port: ${port}`)
+        })
+    }
 }
 
 dbConnect().then(() => {

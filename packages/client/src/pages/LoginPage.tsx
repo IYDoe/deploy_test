@@ -16,9 +16,7 @@ export function LoginPage() {
     const loginRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const error = useAppSelector(state => state.user.error);
-    const [ errorMessage, setErrorMessage ] = useState('');
-    const { isAuth, signin } = useAuthorization();
-    const [ loading, setLoading ] = useState(true)
+    const { isAuth, signin, isLoading } = useAuthorization();
     const [ errorFields, setErrorFields ] = useState({
         login: false,
         password: false
@@ -27,22 +25,8 @@ export function LoginPage() {
     useEffect(() => {
         if (isAuth) {
             navigate(Paths.startScreen)
-        } else {
-            dispatch(getUserInfo()).then(res => {
-                if (res.payload !== undefined) {
-                    navigate(Paths.startScreen)
-                } else {
-                    setLoading(false);
-                }
-            })
         }
-
-        if (error && !errorMessage && !Object.values(getErrorFields()).includes(true)) {
-            setErrorMessage(error)
-        } else {
-            setErrorMessage('');
-        }
-    }, [ error, isAuth, errorFields ])
+    }, [ isAuth, errorFields ])
 
     const onSubmitForm = (e: FormEvent) => {
         e.preventDefault();
@@ -73,7 +57,7 @@ export function LoginPage() {
         })
     }
 
-    if (loading) {
+    if (isLoading) {
         return <main className='main'><Loader /></main>
     }
 
@@ -103,8 +87,8 @@ export function LoginPage() {
                         />
                         <Button type='submit' text='Войти' buttonClass='form__button'/>
                     </form>
-                    <p className='text error label__error'>{errorMessage}</p>
-                    <Button type='button' text='Войти с помощью Яндекс' buttonClass='form__button' onClick={onYandexAuthorization}/>
+                    <Button type='button' text='Войти с помощью Яндекс' buttonClass='form__button button_top-indent' onClick={onYandexAuthorization}/>
+                    <p className='text error label__error'>{error}</p>
                     <Link to={Paths.register} className='link shape__link'>Еще не зарегестрированы?</Link>
                 </div>
             </div>

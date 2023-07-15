@@ -96,7 +96,7 @@ export const EditProfilePage = () => {
     return (
         <main className="main">
             <div className="shape">
-                <ButtonBack />
+                <ButtonBack path={Paths.profile} />
                 <div className="shape__wrapper">
                     <div className="profile">
                         <form

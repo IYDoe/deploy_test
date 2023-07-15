@@ -1,12 +1,13 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BackIcon } from '../assets/icons/Back'
+import { ButtonBackProps } from '../interfaces'
 
-export const ButtonBack = () => {
+export const ButtonBack = ({ path }: ButtonBackProps) => {
     const navigate = useNavigate()
 
     const handleBack = () => {
-        navigate(-1)
+        navigate(path)
     }
 
     return (

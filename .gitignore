@@ -12,4 +12,6 @@ tmp
 !.yarn/sdks
 !.yarn/versions
 
+/ssl/localhost/
+
 lerna-debug.log*

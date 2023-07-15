@@ -1,12 +1,11 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Avatar } from '../components/Avatar'
-import { ButtonBack } from '../components/ButtonBack'
 import { Paths } from '../utils/paths'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { selectUserData } from '../store/selectors/userSelectors'
 import { logoutUser } from '../store/slices/userSlice/actions'
-import axios from 'axios'
+import { ButtonBack } from '../components/ButtonBack'
 
 export const ProfilePage: FC = () => {
     const dispatch = useAppDispatch()
@@ -20,14 +19,10 @@ export const ProfilePage: FC = () => {
         navigate(Paths.main)
     }
 
-    useEffect(() => {
-        axios.post('http://localhost:3000/api/topics')
-    }, [])
-
     return (
         <main className="main">
             <div className="shape">
-                <ButtonBack />
+                <ButtonBack path={Paths.startScreen} />
                 <div className="shape__wrapper">
                     <div className="profile">
                         <div className="profile__inner">

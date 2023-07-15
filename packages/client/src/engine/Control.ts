@@ -28,7 +28,7 @@ export class Control {
             this.game.eventBus.emit(EVENTS.RIGHT, isMoving);
             break;
         case 'ArrowLeft':
-            this.game.eventBus.emit(EVENTS.RIGHT, isMoving);
+            this.game.eventBus.emit(EVENTS.LEFT, isMoving);
             break;
         case 'ArrowUp':
             this.game.eventBus.emit(EVENTS.UP, isMoving);

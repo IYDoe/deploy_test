@@ -56,3 +56,7 @@ export interface ParticipantProps {
 export interface ParticipantData {
     data: ParticipantProps,
 }
+
+export interface ButtonBackProps {
+    path: string,
+}

@@ -13,9 +13,8 @@ import { Loader } from '../components/Loader'
 export function RegisterPage() {
     const navigate = useNavigate()
     const dispatch = useAppDispatch();
-    const { isAuth } = useAuthorization();
+    const { isAuth, isLoading } = useAuthorization();
     const error = useAppSelector(state => state.user.error);
-    const [ errorMessage, setErrorMessage ] = useState('');
     const firstNameRef = useRef<HTMLInputElement>(null);
     const secondNameRef = useRef<HTMLInputElement>(null);
     const phoneRef = useRef<HTMLInputElement>(null);
@@ -23,7 +22,6 @@ export function RegisterPage() {
     const passwordRef = useRef<HTMLInputElement>(null);
     const passwordRepeatRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
-    const [ loading, setLoading ] = useState(true)
     const [ errorFields, setErrorFields ] = useState({
         login: false,
         password: false,
@@ -37,22 +35,8 @@ export function RegisterPage() {
     useEffect(() => {
         if (isAuth) {
             navigate(Paths.startScreen)
-        } else {
-            dispatch(getUserInfo()).then(res => {
-                if (res.payload !== undefined) {
-                    navigate(Paths.startScreen)
-                } else {
-                    setLoading(false);
-                }
-            })
         }
-
-        if (error && !errorMessage && !Object.values(getErrorFields()).includes(true)) {
-            setErrorMessage(error)
-        } else {
-            setErrorMessage('');
-        }
-    }, [ error, isAuth, errorFields ])
+    }, [ isAuth, errorFields ])
 
     const onSubmitForm = (e: FormEvent) => {
         e.preventDefault();
@@ -70,7 +54,7 @@ export function RegisterPage() {
                 second_name: secondNameRef.current?.value as string,
                 password: passwordRef.current?.value as string
             })).then(() => {
-                navigate(Paths.login)
+                dispatch(getUserInfo())
             })
         }
     }
@@ -87,7 +71,7 @@ export function RegisterPage() {
         }
     }
 
-    if (loading) {
+    if (isLoading) {
         return <main className='main'><Loader /></main>
     }
 
@@ -157,7 +141,7 @@ export function RegisterPage() {
                         <Button type='submit' text='Зарегестрироваться'
                             buttonClass='form__button'/>
                     </form>
-                    <p className='text error label__error'>{errorMessage}</p>
+                    <p className='text error label__error'>{error}</p>
                     <Link to={Paths.login} className='link shape__link'>Войти</Link>
                 </div>
             </div>

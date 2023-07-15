@@ -9,14 +9,21 @@ services:
             dockerfile: Dockerfile.client
             args:
                 CLIENT_PORT: ${CLIENT_PORT}
+                DOCKER_BUILD: 'true'
+        depends_on:
+            server: 
+                condition: service_started
         restart: always
         ports:
+            - "443:443"
             - "${CLIENT_PORT}:80"
         environment:
             - CLIENT_PORT=${CLIENT_PORT}
             - SERVER_PORT=${SERVER_PORT}
         networks: 
             - awesome
+        links:
+            - server
 
     server:
         container_name: prakticum-server
@@ -27,15 +34,13 @@ services:
             args:
                 SERVER_PORT: ${SERVER_PORT}
         depends_on:
-            client: 
-                condition: service_started
             postgres:
                 condition: service_healthy
         restart: always
         ports:
             - "${SERVER_PORT}:${SERVER_PORT}"
         environment:
-            CLIENT_URL: prakticum-client:80
+            DOCKER_BUILD: 'true'
             SERVER_PORT: ${SERVER_PORT}
             POSTGRES_PORT: ${POSTGRES_PORT}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
