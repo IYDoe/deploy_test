@@ -113,8 +113,8 @@ jobs:
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
           NODE_ENV: ${{ env.NODE_ENV }}
           PORT: ${{ env.PORT }}
-          CLIENT_IMAGE: cr.yandex/$CR_REGISTRY/$CR_REPO_CLIENT:${IMAGE_TAG}
-          SERVER_IMAGE: cr.yandex/$CR_REGISTRY/$CR_REPO_SERVER:${IMAGE_TAG}
+          CLIENT_IMAGE: cr.yandex/$CR_REGISTRY/$CR_REPO_CLIENT:${{ env.IMAGE_TAG }}
+          SERVER_IMAGE: cr.yandex/$CR_REGISTRY/$CR_REPO_SERVER:${{ env.IMAGE_TAG }}
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           folder-id: b1gl6pj9639tbgchb5k5
