@@ -48,7 +48,7 @@ jobs:
           SERVER_IMAGE: ghcr.io/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/server:${{ github.sha }}
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
-          folder-id: epd247pdhsob4v2d1jfb
+          folder-id: b1gl6pj9639tbgchb5k5
           vm-name: game
           vm-service-account-name: admin
           vm-subnet-id: e2lc3rqdf350l793nehl
