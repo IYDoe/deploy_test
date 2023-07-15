@@ -2,8 +2,10 @@ name: Deploy Yandex Cloud
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  release:
+    types: [created]
+    workflow_dispatch:
 
 env:
   NODE_ENV: production
