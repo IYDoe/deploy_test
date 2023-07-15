@@ -1,74 +1,74 @@
-version: "3.9"
+version: '3.9'
 
 services:
-    client:
-        container_name: {{ env.CLIENT_IMAGE }}
-        image: {{ env.CLIENT_IMAGE }}
-        build:
-            context: .
-            dockerfile: Dockerfile.client
-            args:
-                CLIENT_PORT: {{ env.CLIENT_PORT }}
-        restart: always
-        ports:
-            - "{{ env.PORT }}:80"
-        environment:
-            - "CLIENT_PORT={{ env.CLIENT_PORT }}"
-            - "SERVER_PORT={{ env.SERVER_PORT }}"
-        networks: 
-            - awesome
+  client:
+    container_name: prakticum-client
+    image: {{ env.CLIENT_IMAGE }}
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+      args:
+        CLIENT_PORT: 3000
+    restart: always
+    ports:
+      - '3000:80'
+    environment:
+      - CLIENT_PORT=3000
+      - SERVER_PORT=3001
+    networks:
+      - awesome
 
-    server:
-        container_name: {{ env.SERVER_IMAGE }}
-        image:  {{ env.SERVER_IMAGE }}
-        build:
-            context: .
-            dockerfile: Dockerfile.server
-            args:
-                SERVER_PORT: {{ env.SERVER_PORT }}
-        depends_on:
-            client: 
-                condition: service_started
-            postgres:
-                condition: service_healthy
-        restart: always
-        ports:
-            - "{{ env.SERVER_PORT }}:{{ env.SERVER_PORT }}"
-        environment:
-            CLIENT_URL: prakticum-client:80
-            SERVER_PORT:  {{ env.SERVER_PORT }}
-            POSTGRES_PORT: {{ env.POSTGRES_PORT }}
-            POSTGRES_PASSWORD: {{ env.POSTGRES_PASSWORD }}
-            POSTGRES_USER: {{ env.POSTGRES_USER }}
-            POSTGRES_DB: {{ env.POSTGRES_DB }}
-            POSTGRES_HOST: {{ env.POSTGRES_HOST }}
-        networks: 
-            - awesome
+  server:
+    container_name: prakticum-server
+    image: {{ env.SERVER_IMAGE }}
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+      args:
+        SERVER_PORT: 3001
+    depends_on:
+      client:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+    restart: always
+    ports:
+      - '{{ env.SERVER_PORT }}:{{ env.SERVER_PORT }}'
+    environment:
+      CLIENT_URL: prakticum-client:80
+      SERVER_PORT: 3001
+      POSTGRES_PORT: 5432
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_HOST: ''
+    networks:
+      - awesome
 
-    postgres:
-        container_name: prakticum-postgres
-        image: postgres:14
-        ports:
-            - "5432:5432"
-        environment:
-            POSTGRES_USER: {{ env.POSTGRES_USER }}
-            POSTGRES_PASSWORD: {{ env.POSTGRES_PASSWORD }}
-            POSTGRES_DB: {{ env.POSTGRES_DB }}
-        volumes:
-            - prakticum-postgres:/var/lib/postgresql/data
-        networks: 
-            - awesome
-        restart: always
-        healthcheck:
-            test: ["CMD-SHELL", "pg_isready -U postgres"]
-            interval: 5s
-            timeout: 5s
-            retries: 5
+  postgres:
+    container_name: prakticum-postgres
+    image: postgres:14
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - prakticum-postgres:/var/lib/postgresql/data
+    networks:
+      - awesome
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
-    prakticum-postgres:
-        driver: local
+  prakticum-postgres:
+    driver: local
 
 networks:
-    awesome:
-        driver: bridge
+  awesome:
+    driver: bridge
