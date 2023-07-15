@@ -5,6 +5,15 @@ on:
     branches:
       - main
 
+env:
+  NODE_ENV: production
+  CLIENT_PORT: 3001
+  SERVER_PORT: 3000
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_DB: postgres
+  POSTGRES_PORT: 5432
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
