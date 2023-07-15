@@ -1,9 +1,21 @@
-name: Push to GitHub Container Registry
+name: Deploy Yandex Cloud
 
 on:
   push:
     branches:
       - main
+
+env:
+  NODE_ENV: production
+  CLIENT_PORT: 3001
+  SERVER_PORT: 3000
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_DB: postgres
+  POSTGRES_PORT: 5432
+  POSTGRES_HOST: ''
+  CLIENT_IMAGE: ghcr.io/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/client:${{ github.sha }}
+  SERVER_IMAGE: ghcr.io/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/server:${{ github.sha }}
 
 jobs:
   build-and-push:
@@ -47,8 +59,8 @@ jobs:
           YC_VM_USERNAME: ${{ secrets.YC_VM_USERNAME }}
           CR_REGISTRY: ${{ secrets.CR_REGISTRY }}
           CR_REPOSITORY: ${{ secrets.CR_REPO }}
-          CLIENT_IMAGE: ghcr.io/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/client:${{ github.sha }}
-          SERVER_IMAGE: ghcr.io/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/server:${{ github.sha }}
+          CLIENT_IMAGE: ${{ env.CLIENT_IMAGE }}
+          SERVER_IMAGE: ${{ env.SERVER_IMAGE }}
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           folder-id: b1gl6pj9639tbgchb5k5
